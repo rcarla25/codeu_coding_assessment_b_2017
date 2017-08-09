@@ -29,7 +29,7 @@ public final class MyTokenReader implements TokenReader {
 
   public MyTokenReader(String source) {
     // Your token reader will only be given a string for input. The string will
-    // contain the whole source (0 or more lines).
+    // contain the whole source (0 or more lines)
   }
 
   @Override
