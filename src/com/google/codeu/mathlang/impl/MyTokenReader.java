@@ -16,8 +16,13 @@ package com.google.codeu.mathlang.impl;
 
 import java.io.IOException;
 
+import com.google.codeu.mathlang.core.tokens.NameToken;
+import com.google.codeu.mathlang.core.tokens.NumberToken;
+import com.google.codeu.mathlang.core.tokens.SymbolToken;
+import com.google.codeu.mathlang.core.tokens.StringToken;
 import com.google.codeu.mathlang.core.tokens.Token;
 import com.google.codeu.mathlang.parsing.TokenReader;
+
 
 // MY TOKEN READER
 //
@@ -27,9 +32,14 @@ import com.google.codeu.mathlang.parsing.TokenReader;
 // work with the test of the system.
 public final class MyTokenReader implements TokenReader {
 
+  String source;
+  Scanner in;
+
   public MyTokenReader(String source) {
     // Your token reader will only be given a string for input. The string will
     // contain the whole source (0 or more lines)
+    this.source = source;
+    in = new Scanner(source);
   }
 
   @Override
@@ -40,7 +50,37 @@ public final class MyTokenReader implements TokenReader {
 
     // If for any reason you detect an error in the input, you may throw an IOException
     // which will stop all execution.
+    Token result;
+    if (in.hasNext()) {
+      if (in.hasNextDouble()) {
+        result = new NumberToken(in.nextDouble());
+        return result;
+      }
+      else {
+        result = identifyNonNumberToken(in.next());
+      }
+    }
 
     return null;
   }
+
+  private Token identifyNonNumberToken(String input) {
+    if (input.length() == 1) {
+      return new SymbolToken(input.charAt(0));
+    }
+    else if (checkNameRestrictions(input)) {
+      return new NameToken(input);
+    }
+    else {
+      return new StringToken(input);
+    }
+  }
+
+  private boolean checkNameRestrictions(String input) {
+    boolean alphabeticalChar = (65 <= input.charAt(0) && input.charAt(0) <= 90) ||
+                               (97 <= input.charAt(0) && input.charAt(0) <= 122);
+    boolean noWhitespace = !input.contains(" ");
+    return alphabeticalChar && noWhitespace;
+  }
+
 }
